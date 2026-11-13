@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>love</title>
+<style>
+:root{--bg:#171233;--bg2:#2a1b5c;--card:rgba(255,255,255,.07);--line:rgba(255,255,255,.16);--tx:#fff;--mute:#b9b0dd;--pink:#ff7aa8;--red:#ff4d5e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:radial-gradient(120% 80% at 50% 0%,var(--bg2),var(--bg)) fixed;color:var(--tx);font-family:"Cairo","Segoe UI",Tahoma,sans-serif;line-height:1.7;overflow-x:hidden}
+.wrap{max-width:600px;margin:0 auto;padding:24px 10px 120px;position:relative;z-index:2}
+.hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.hearts i{position:absolute;bottom:-40px;font-style:normal;animation:up linear infinite;opacity:.55}
+@keyframes up{to{transform:translateY(-110vh) rotate(25deg);opacity:0}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:26px;padding:20px;margin:16px 0;text-align:center}
+h1,h2{margin:.2em 0;font-weight:800}h1{font-size:28px}h2{font-size:22px}
+p{margin:.4em 0;color:var(--mute)}
+input[type=text]{width:100%;padding:16px;border-radius:16px;border:1px solid var(--line);background:rgba(0,0,0,.3);color:var(--tx);font:inherit;font-size:20px;text-align:center;letter-spacing:.3em;direction:ltr}
+button{display:block;width:100%;margin-top:12px;padding:14px;border:0;border-radius:16px;background:linear-gradient(90deg,var(--pink),var(--red));color:#fff;font:inherit;font-weight:700;font-size:17px;cursor:pointer}
+button.ghost{background:var(--card);border:1px solid var(--line)}
+button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.hide{display:none!important}
+.err{color:#ffb3bd;min-height:1.6em}
+ 
+#loader{position:fixed;inset:0;z-index:20;background:var(--bg);display:grid;place-items:center;text-align:center}
+.ring{width:96px;height:96px;border-radius:50%;border:6px solid rgba(255,255,255,.12);border-top-color:var(--pink);border-left-color:#7c83ff;animation:spin 1s linear infinite;margin:0 auto 18px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dots span{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px;background:var(--pink)}
+ 
+#intro{position:fixed;inset:0;z-index:15;background:#0c0820;display:grid;place-items:center;text-align:center;padding:24px}
+#intro .pill{display:inline-block;border:1px solid var(--line);border-radius:30px;padding:8px 22px;font-size:22px}
+#intro .nm{font-size:46px;font-weight:800;letter-spacing:.08em;margin:14px 0}
+#intro .tx{font-size:26px;font-weight:700}
+.fade{animation:fade 1s both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}}
+ 
+.avatar{width:130px;height:130px;border-radius:50%;margin:0 auto 10px}
+.slot{position:relative;border-radius:22px;overflow:hidden;border:2px dashed var(--line);background:rgba(0,0,0,.25);aspect-ratio:3/4;display:grid;place-items:center;cursor:pointer;color:var(--mute);font-size:15px}
+.slot.round{border-radius:50%;aspect-ratio:1}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot.has{border-style:solid}
+.cap{margin-top:10px;font-size:19px;font-weight:700}
+ 
+.date{font-size:40px;font-weight:800;letter-spacing:.08em;margin-top:10px;color:var(--pink)}
+.fmsg{white-space:pre-line;text-align:center;color:#fff;font-size:18px;line-height:2.1;margin-top:10px}
+.mbox{margin:14px 0}
+.mslot{position:relative;border-radius:22px;overflow:hidden;border:2px dashed var(--line);background:rgba(0,0,0,.25);display:grid;place-items:center;cursor:pointer;color:var(--mute);font-size:16px;min-height:150px;padding:14px}
+.mslot.vid{aspect-ratio:16/9}
+.mslot.has{border-style:solid;cursor:default;padding:0;background:#000}
+.mslot video{width:100%;height:100%;display:block;object-fit:contain;background:#000}
+.mslot.aud.has{background:rgba(0,0,0,.25);padding:14px;min-height:0}
+.mslot audio{width:100%}
+.mtitle{margin-top:8px;font-weight:700}
+.mchange{margin-top:8px;padding:8px;font-size:14px}
+#story .card{padding:10px 10px 16px}
+#story .slot{aspect-ratio:3/4;min-height:420px;border-radius:20px}
+#story .cap{font-size:20px}
+#media.card{padding:12px 10px 16px}
+#media .mslot.vid,#story .mslot.vid{aspect-ratio:auto;min-height:0;border-radius:20px}
+#media .mslot.vid.has video,#story .mslot.vid.has video{width:100%;height:auto;min-height:320px;max-height:80vh;aspect-ratio:auto}
+#media .mslot.vid:not(.has),#story .mslot.vid:not(.has){min-height:320px}
+#media .mbox{margin:18px 0}
+.counter{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.counter div{background:rgba(0,0,0,.25);border-radius:16px;padding:12px 4px}
+.counter b{display:block;font-size:28px}.counter span{font-size:13px;color:var(--mute)}
+ 
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.flip{min-height:150px;margin:0;border-radius:22px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-size:18px;display:grid;place-items:center;padding:12px}
+.flip .h{font-size:44px;color:var(--pink)}
+.flip.open{background:linear-gradient(135deg,var(--pink),var(--red))}
+ 
+.modal{position:fixed;inset:0;background:rgba(10,6,30,.88);z-index:30;display:grid;place-items:center;padding:20px}
+.modal .card{background:#1d1840;max-width:420px;width:100%;margin:0;max-height:88vh;overflow-y:auto}
+.modal .big{white-space:pre-line;line-height:2}
+.big{color:#fff;font-size:20px}
+.hero{padding:34px 20px}.hero .nm{font-size:40px;font-weight:800;letter-spacing:.08em;line-height:1.2}.hero .tx{font-size:23px;font-weight:700;color:#fff;margin-top:8px}
+ 
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:10;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(15,10,40,.94);border-top:1px solid var(--line)}
+.bar .in{max-width:460px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.disc{width:46px;height:46px;border-radius:50%;flex:none;background:conic-gradient(var(--pink),var(--red),var(--bg2),var(--pink));display:grid;place-items:center}
+.disc.on{animation:spin 4s linear infinite}
+.bar .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .t small{display:block;color:var(--mute);font-weight:400}
+.bar button{width:46px;height:46px;margin:0;padding:0;border-radius:50%;flex:none}
+.prog{height:3px;background:var(--line);margin-top:8px;border-radius:2px;overflow:hidden}.prog i{display:block;height:100%;width:0;background:var(--pink)}
+@media (prefers-reduced-motion:reduce){.hearts i,.disc.on,.ring{animation:none}}
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts" aria-hidden="true"></div>
+ 
+ 
+<div id="loader"><div><div class="ring"></div><h2>جاري التحميل</h2><div class="dots"><span></span><span></span><span></span></div><p id="lmsg">ثواني ياروحي معلش ✨😂❤️</p></div></div>
+ 
+ 
+<div id="intro" class="hide">
+  <div>
+    <div class="pill fade">✨ بحبك ❤️</div>
+    <div class="nm fade" id="iName" style="animation-delay:.5s">Esraa</div>
+    <div class="tx fade" id="iLine" style="animation-delay:1s"></div>
+  </div>
+</div>
+ 
+<div class="wrap">
+ 
+ 
+<section id="gate" class="card hide" style="margin-top:8vh">
+  <div class="slot round avatar hide" id="avSlot" style="cursor:default"></div>
+  <h1>جاهزة؟ 🤔</h1>
+  <p>كل اللي هنا هيفضل بيني وبينك طول العمر ❤️</p>
+  <input id="pw" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="الباسورد" aria-label="الباسورد" style="margin-top:14px">
+  <div class="err" id="err" role="alert"></div>
+  <button id="openBtn">يلا بسرعة افتحي 😂❤️</button>
+</section>
+ 
+<main id="main" class="hide">
+  <section class="card hero"><div style="font-size:40px" aria-hidden="true">💞</div><div class="nm" id="hName"></div><div class="tx" id="hLine"></div></section>
+ 
+  <!-- 1) المؤقت -->
+  <section class="card">
+    <h1>بداية حكايتي معاكي ❤️</h1>
+    <div class="date" dir="ltr">3/7/2026</div>
+    <div class="counter" id="counter">
+      <div><b id="cY">0</b><span>سنة</span></div>
+      <div><b id="cM">0</b><span>شهر</span></div>
+      <div><b id="cD">0</b><span>يوم</span></div>
+    </div>
+    <p id="cT" style="margin-top:12px"></p>
+  </section>
+ 
+  <!-- 2) الصور -->
+  <h2 style="text-align:center;margin-top:30px">ذكرياتنا الجميلة 👇</h2>
+  <div id="story"></div>
+ 
+  <!-- 3) الكروت -->
+  <h2 style="text-align:center;margin-top:30px">دوسي على الكروت 😉❤️</h2>
+  <section class="card"><div class="cards" id="cards"></div></section>
+ 
+  <h2 style="text-align:center;margin-top:30px">اقفي هنا شوية متجريش 😂</h2>
+  <section class="card">
+    <button class="ghost" data-m="بحبك ❤️ وهفضل أحبك العمر كله">♡ بحبك ♡</button>
+    <button class="ghost" data-m="بموت فيكي ✨ مفيش حد زيك">✦ بموت فيكي ✦</button>
+    <button class="ghost" id="lock1" disabled>🔒 بعشقك 🔒</button>
+    <p id="hint1">افتحي الكروت اللي فوق عشان تتفتح 😉</p>
+  </section>
+ 
+  <!-- 4) الفيديوهات -->
+  <section class="card" id="media"><h2>فيديوهاتنا 🎬</h2><div id="mediaList"></div></section>
+ 
+  <!-- 5) الرسالة في الآخر -->
+  <section class="card hero"><div style="font-size:40px" aria-hidden="true">💞</div><div class="tx" id="eLine"></div><p style="margin-top:10px">وكل سنة واحنا مع بعض ❤️</p></section>
+ 
+  <section class="card">
+    <button id="lock2" disabled>🔒 لسه مخلصتش دوسي هنا 🙋😂❤️</button>
+  </section>
+</main>
+</div>
+ 
+<!-- مشغل الأغنية -->
+<div class="bar hide" id="bar">
+  <div class="in">
+    <button id="play" aria-label="تشغيل">▶</button>
+    <div class="t"><span id="songName">أغنيتنا ❤️</span><small id="songHint">اختاري الأغنية من 🎵</small></div>
+    <button class="ghost" id="pick" aria-label="اختيار أغنية" style="width:46px;margin:0">🎵</button>
+    <div class="disc" id="disc" aria-hidden="true">♪</div>
+  </div>
+  <div class="prog"><i id="pg"></i></div>
+  <input type="file" id="file" accept="audio/*" class="hide">
+  <audio id="aud" preload="none"></audio>
+</div>
+ 
+<!-- نافذة الرسالة -->
+<div class="modal hide" id="modal" role="dialog" aria-modal="true">
+  <div class="card">
+    <div style="font-size:44px" aria-hidden="true">💌</div>
+    <h2 id="mName"></h2>
+    <p class="big" id="mText"></p>
+    <button class="ghost" id="close">إغلاق</button>
+  </div>
+</div>
+ 
+<script>
+setTimeout(function(){var l=document.getElementById('loader'),g=document.getElementById('gate');if(l)l.classList.add('hide');if(g)g.classList.remove('hide')},2200);
+</script>
+<script>
+ 
+const CFG={
+  name:"اسراء", nameEn:"ESRAA",
+  first:"يوم ما عرفنا بعض كان يوم ولادتي ❤️",
+  title:"Esraa",
+  password:"love",
+  letter:`من يوم ما دخلتي حياتي وأنا بقيت بشوف بكرة بشكل مختلف، بقيت أتمنى الأيام تعدّي عشان ييجي اليوم اللي نكون فيه مع بعض تحت سقف واحد، ونعيش تفاصيلنا الصغيرة قبل الكبيرة.
+وعايزك تعرفي إن فيه حاجة واحدة بتأكدها الأيام جوايا، وهي إني كل يوم بحبك أكتر من اليوم اللي قبله، وكل ما يعدّي وقت وأعرفك أكتر، ألاقي نفسي متعلق بيكي وبحب تفاصيلك أكتر. مشاعري ناحيتك مش بتقل مع الوقت، بالعكس، بتكبر وبتزيد، وكل يوم بيعدّي بيخليني أتأكد إن اختياري ليكي كان أجمل اختيار في حياتي.
+أنا مش بوعدك إن حياتنا هتكون من غير تعب أو اختلاف، لكن بوعدك إني دائما هكون جانبك وأتمسك بيكي، وأسعى دايمًا إني أكون الشخص اللي نفسك فيه تلاقي معاه الأمان والراحة والسند`,
+  cards:["اول كارت اهوووو 😂🙋","التاني","التالت","الرابع"],
+  cardTexts:["أول مرة شفتك فيها قلبي وقع ❤️","ضحكتك بتنور يومي ✨","معاكي كل حاجة أحلى","بحبك اكتر من امبارح وأقل من بكرة"],
+  story:["بحبك يا نور عيني ❤️","كل لحظة في عمري بتمنى تكون معاكي ❤️","كل سنة واحنا مع بعض ❤️","انا والقمر 😉❤️","عمري ماكنت مبسوط زي ما انا معاكي ❤️","الي قاعدة ف قلبي ومرحرحة 😂❤️","في قمر كدا؟ 🤔❤️","بحبك ❤️","ضحكتك أحلى حاجة في يومي ✨","معاكي الدنيا أحلى 💗","يا أجمل صدفة في حياتي ❤️","حضنك بيت الأمان 🏡❤️","كل ذكرى معاكي كنز 💎","وجودك في حياتي نعمة 🤍"],
+  /* الفيديوهات والصوت: حطي الرابط أو المسار أو data:...base64 بين العلامتين */
+  media:{
+    audio:"AUD-20261111-WA0022.mp3",   
+    audioName:"أغنيتنا ❤️",
+    video3:"video_2026-11-11_23-36-24.mp4",   /* فيديو 3 */
+    video4:"video_2026-11-11_23-36-44.mp4",   /* فيديو 4 */
+    video5:"video_2026-11-11_23-43-25.mp4",   /* فيديو 5 */
+    storyVideo:"" /* فيديو آخر مكان في ذكرياتنا الجميلة */
+  },
+  /* الصور: حطي اسم كل صورة بالترتيب (15 صورة) بين العلامتين، وسيبي الفاضي "" لو عايزاها من الصفحة */
+  /* صورتك الشخصية (الدايرة): حطي اسم الصورة هنا، وسيبيها "" لو عايزاها تتضاف من الصفحة */
+  avatar:"me.jpg", /* اسم صورتك الشخصية (في نفس فولدر الملف)، لو فاضي الدايرة مش بتظهر */
+  photos:["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg","6.jpg","7.jpg","8.jpg","9.jpg","10.jpg","11.jpg","12.jpg","13.jpg","14.jpg"],
+  songName:"أغنيتنا ❤️",
+  /* قايمة الأغاني: ضيفي أي عدد، كل أغنية لما تخلص اللي بعدها تشتغل، وبعد الأخيرة ترجع للأولى */
+  songs:[
+    {src:"AUD-20261111-WA0022.mp3", name:"أغنيتنا ❤️"},
+    {src:"1.mp3", name:"الأغنية التانية 🎵"},
+    {src:"2.mp3", name:"الأغنية التالتة 🎶"}
+  ],
+  songSrc:"" /* اختياري: أغنية واحدة بس بدل القايمة */
+};
+/* ======================= */
+const $=id=>document.getElementById(id);
+(function(){const h=$('hearts');for(let i=0;i<14;i++){const e=document.createElement('i');e.textContent=['❤','💗','💜'][i%3];e.style.left=Math.random()*100+'%';e.style.fontSize=(14+Math.random()*22)+'px';e.style.animationDuration=(8+Math.random()*9)+'s';e.style.animationDelay=(-Math.random()*12)+'s';h.appendChild(e)}})();
+$('iName').textContent=CFG.nameEn;$('iLine').textContent=CFG.first;$('hName').textContent=CFG.nameEn;$('hLine').textContent=CFG.first;$('eLine').textContent=CFG.first;$('mName').textContent=CFG.name;$('songName').textContent=CFG.songName;
+ 
+function bindSlot(s){const f=s.querySelector('input');if(!f)return;f.onchange=e=>{const file=e.target.files[0];if(!file)return;let im=s.querySelector('img');if(!im){im=document.createElement('img');s.appendChild(im)}im.alt='';im.src=URL.createObjectURL(file);s.classList.add('has')}}
+(function(){const a=$('avSlot');if(CFG.avatar){const im=document.createElement('img');im.alt='';im.onerror=()=>a.classList.add('hide');im.src=CFG.avatar;a.appendChild(im);a.classList.add('has');a.classList.remove('hide')}})();
+$('story').innerHTML=CFG.story.map((t,i)=>{
+  const v=(i===CFG.story.length-1)?CFG.media.storyVideo:'';
+  if(v)return `<section class="card"><div class="mbox" style="margin:0"><div class="mslot vid has"><video class="auto" muted loop autoplay playsinline preload="auto" src="${v}"></video></div></div><div class="cap">${t}</div></section>`;
+  const ph=(CFG.photos||[])[i];
+  if(ph)return `<section class="card"><div class="slot has"><img src="${ph}" alt=""></div><div class="cap">${t}</div></section>`;
+  return `<section class="card"><label class="slot"><span>اضغطي لإضافة صورة 📷</span><input type="file" accept="image/*" class="hide"></label><div class="cap">${t}</div></section>`;
+}).join('');
+document.querySelectorAll('#story .slot').forEach(bindSlot);
+ 
+// مؤقت: سنين وشهور وأيام من 15/6/2026
+(function(){
+  const S=new Date(2026,5,15,0,0,0);
+  function tick(){
+    const n=new Date();
+    let y=0,m=0,d=0,h=0,mi=0,sc=0;
+    if(n>S){
+      y=n.getFullYear()-S.getFullYear();m=n.getMonth()-S.getMonth();d=n.getDate()-S.getDate();
+      if(d<0){m--;d+=new Date(n.getFullYear(),n.getMonth(),0).getDate()}
+      if(m<0){y--;m+=12}
+      h=n.getHours();mi=n.getMinutes();sc=n.getSeconds();
+    }
+    $('cY').textContent=y;$('cM').textContent=m;$('cD').textContent=d;
+    $('cT').textContent='و '+h+' ساعة '+mi+' دقيقة '+sc+' ثانية';
+  }
+  tick();setInterval(tick,1000);
+})();
+ 
+// تحميل ثم الباسورد
+setTimeout(()=>{$('loader').classList.add('hide');$('gate').classList.remove('hide')},1800);
+ 
+let tries=0;
+function norm(v){return v.replace(/[\s\u200e\u200f\u200b]/g,'').toLowerCase()}
+function unlock(){
+  const v=norm($('pw').value);
+  const ok=[norm(CFG.password),'مخرث'];
+  if(!ok.includes(v)){
+    tries++;
+    $('err').textContent=tries>=3?'الباسورد كلمة love بالإنجليزي (غيري الكيبورد لإنجليزي) ❤️':'الباسورد غلط، جربي تاني ❤️';
+    return;
+  }
+  $('gate').classList.add('hide');$('intro').classList.remove('hide');
+  if(SONG){aud.play().catch(()=>{$('songHint').textContent='اضغطي تشغيل'})}
+  let done=false;
+  const go=()=>{if(done)return;done=true;$('intro').classList.add('hide');$('main').classList.remove('hide');$('bar').classList.remove('hide');window.scrollTo(0,0)};
+  setTimeout(go,3600);
+  $('intro').addEventListener('click',go);
+}
+$('openBtn').onclick=unlock;
+$('pw').addEventListener('keydown',e=>{if(e.key==='Enter')unlock()});
+ 
+ 
+ 
+function show(t){$('mText').textContent=t;$('modal').classList.remove('hide');$('close').focus()}
+function hideM(){$('modal').classList.add('hide')}
+$('close').onclick=hideM;
+$('modal').addEventListener('click',e=>{if(e.target===$('modal'))hideM()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')hideM()});
+document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>show(b.dataset.m));
+ 
+let opened=0;
+$('cards').innerHTML=CFG.cards.map((c,i)=>`<button class="flip" data-i="${i}">${i===0?c:'<span class="h">♡</span>'+c}</button>`).join('');
+document.querySelectorAll('.flip').forEach(b=>b.onclick=()=>{
+  if(!b.classList.contains('open')){b.classList.add('open');opened++}
+  b.textContent=CFG.cardTexts[b.dataset.i];
+  if(opened===CFG.cards.length){
+    $('lock1').disabled=false;$('lock1').textContent='💗 بعشقك 💗';$('lock1').onclick=()=>show('بعشقك ❤️ يا أحلى حاجة في حياتي');$('hint1').textContent='اتفتحت 😍';
+    $('lock2').disabled=false;$('lock2').textContent='💌 افتحي الرسالة الأخيرة';$('lock2').onclick=()=>show(CFG.letter);
+  }
+});
+ 
+ 
+const aud=$('aud');
+const LIST=(CFG.songs&&CFG.songs.length)?CFG.songs.filter(x=>x&&x.src):[{src:CFG.songSrc||CFG.media.audio,name:CFG.media.audioName||CFG.songName}].filter(x=>x.src);
+const SONG=LIST.length;
+let sIdx=0,sErr=0;
+function loadSong(i){sIdx=i;aud.src=LIST[i].src;$('songName').textContent=LIST[i].name||CFG.songName}
+function nextSong(){loadSong((sIdx+1)%LIST.length);aud.play().catch(()=>{})}
+aud.preload='auto';aud.loop=(LIST.length===1);
+if(SONG){loadSong(0);$('pick').classList.add('hide');$('songHint').textContent='اضغطي تشغيل'}
+aud.addEventListener('ended',()=>{if(LIST.length>1)nextSong()});
+aud.addEventListener('playing',()=>{sErr=0});
+aud.addEventListener('error',()=>{
+  if(!SONG)return;
+  $('songHint').textContent='⚠️ ملف الأغنية مش لاقيه: '+LIST[sIdx].src;
+  if(LIST.length>1&&++sErr<LIST.length)setTimeout(nextSong,800);
+});
+$('pick').onclick=()=>$('file').click();
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;aud.src=URL.createObjectURL(f);$('songName').textContent=f.name.replace(/\.[^.]+$/,'');aud.play().catch(()=>{$('songHint').textContent='اضغطي تشغيل'})};
+$('play').onclick=()=>{if(!aud.src){$('songHint').textContent='اختاري ملف الأغنية من زرار 🎵';return}aud.paused?aud.play().catch(()=>{}):aud.pause()};
+aud.onplay=()=>{document.querySelectorAll('#media audio').forEach(m=>m.pause());$('disc').classList.add('on');$('play').textContent='❚❚';$('songHint').textContent='بتشتغل دلوقتي ❤️'};
+aud.onpause=()=>{$('disc').classList.remove('on');$('play').textContent='▶'};
+aud.ontimeupdate=()=>{if(aud.duration)$('pg').style.width=(aud.currentTime/aud.duration*100)+'%'};
+ 
+ 
+// الفيديوهات والصوت من الكود: الفيديوهات تشتغل لوحدها وتعيد نفسها، والصوت آخر حاجة
+(function(){
+  const M=CFG.media,box=$('mediaList');
+  const items=[['video',M.video3,'فيديو 3'],['video',M.video4,'فيديو 4'],['video',M.video5,'فيديو 5']];
+  items.forEach(([type,src,label])=>{
+    const d=document.createElement('div');d.className='mbox';
+    if(!src){d.innerHTML='<div class="mslot '+(type==='video'?'vid':'aud')+'"><span>'+label+' — ضيفي الرابط في الكود (media)</span></div>';box.appendChild(d);return}
+    const w=document.createElement('div');w.className='mslot has '+(type==='video'?'vid':'aud');
+    const el=document.createElement(type);el.controls=false;el.playsInline=true;
+    el.addEventListener('error',()=>{w.innerHTML='<span style="padding:14px;display:block">⚠️ الملف مش لاقيه: '+src+'<br>لازم يكون في نفس فولدر الصفحة بنفس الاسم</span>';w.classList.remove('has')});
+    if(type==='video'){
+      el.muted=true;el.defaultMuted=true;el.loop=true;el.autoplay=true;el.preload='auto';el.className='auto';
+      el.setAttribute('muted','');el.setAttribute('loop','');el.setAttribute('autoplay','');el.setAttribute('playsinline','');
+      el.src=/^data:|#/.test(src)?src:src+'#t=0.1';
+    }else{
+      el.preload='metadata';el.src=src;
+      el.addEventListener('play',()=>{aud.pause()});
+    }
+    w.appendChild(el);
+    if(type==='audio'){const t=document.createElement('div');t.className='mtitle';t.textContent=M.audioName||'';w.appendChild(t)}
+    d.appendChild(w);box.appendChild(d);
+  });
+})();
+ 
+// تشغيل تلقائي لكل الفيديوهات + إعادة تلقائية لو وقفت
+(function(){
+  const vids=()=>document.querySelectorAll('video.auto');
+  const tryPlay=v=>{const p=v.play();if(p&&p.catch)p.catch(()=>{})};
+  const vis=new Map();
+  const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{vis.set(e.target,e.isIntersecting);if(e.isIntersecting)tryPlay(e.target);else e.target.pause()}),{threshold:.35}):null;
+  function arm(){vids().forEach(v=>{if(v._armed)return;v._armed=true;
+    v.addEventListener('ended',()=>{v.currentTime=0;tryPlay(v)});
+    v.addEventListener('loadeddata',()=>{if(!io||vis.get(v))tryPlay(v)});
+    if(io)io.observe(v);else tryPlay(v);
+  })}
+  arm();
+  // لو المتصفح منع التشغيل أو الفيديو وقف، نحاول تاني
+  setInterval(()=>{arm();vids().forEach(v=>{const shown=!io||vis.get(v);if(shown&&v.paused&&!document.hidden&&v.readyState>0)tryPlay(v)})},2000);
+  // أول لمسة على الصفحة تفك أي منع للتشغيل التلقائي
+  ['touchstart','click'].forEach(ev=>document.addEventListener(ev,()=>vids().forEach(v=>{if(!io||vis.get(v))tryPlay(v)}),{passive:true}));
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)vids().forEach(v=>{if(!io||vis.get(v))tryPlay(v)})});
+})();
+</script>
+</body>
+</html>
